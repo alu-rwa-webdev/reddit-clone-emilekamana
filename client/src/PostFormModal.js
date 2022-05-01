@@ -7,9 +7,8 @@ import Button from "./Button";
 import PostFormModalContext from "./PostFormModalContext";
 import AuthModalContext from "./AuthModalContext";
 import axios from "axios";
-
+// Try something
 function PostFormModal () {
-
   const modalContext = useContext(PostFormModalContext);
   const authModalContext = useContext(AuthModalContext);
 
@@ -21,7 +20,7 @@ function PostFormModal () {
 
   function createPost() {
     const data = {title,body};
-    axios.post('http://localhost:4000/comments', data, {withCredentials:true})
+    axios.post('https://em-reddit-clone-api.herokuapp.com/comment', data, {withCredentials:true})
       .then(response => {
         setNewPostId(response.data._id);
       })

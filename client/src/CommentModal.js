@@ -8,13 +8,12 @@ import RootCommentContext from "./RootCommentContext";
 import Comment from "./Comment";
 
 function CommentModal(props) {
-
   const [comment,setComment] = useState({});
 
   const visibleClass = props.open ? 'block' : 'hidden';
 
   useEffect(() => {
-    axios.get('http://localhost:4000/comments/'+props.id)
+    axios.get('https://em-reddit-clone-api.herokuapp.com/comment/'+props.id)
       .then(response => {
         setComment(response.data);
       });
@@ -27,7 +26,7 @@ function CommentModal(props) {
 
   return (
     <div className={"w-screen h-screen fixed top-0 left-0 z-20 flex "+visibleClass} style={{backgroundColor:'rgba(0,0,0,.8)'}}>
-      <div className="block overflow-scroll">
+      <div className="block overflow-scroll w-screen">
         <ClickOutHandler onClickOut={() => close()}>
           <div className="border my-4 border-reddit_dark-brightest w-3/4 lg:w-1/2 bg-reddit_dark-brighter text-reddit_text self-center p-4 mx-auto rounded-md">
             <div className="">

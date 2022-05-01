@@ -3,7 +3,6 @@ import {useContext} from "react";
 import RootCommentContext from "./RootCommentContext";
 
 function Voting(props) {
-
   const rootCommentInfo = useContext(RootCommentContext);
   const {commentsTotals, userVotes} = rootCommentInfo;
   const {commentId} = props;
@@ -21,7 +20,7 @@ function Voting(props) {
     if (directionNumber === userVote) {
       direction = 'unvote';
     }
-    const url = 'http://localhost:4000/vote/'+props.commentId+'/'+direction;
+    const url = 'https://em-reddit-clone-api.herokuapp.com/vote/'+props.commentId+'/'+direction;
     axios.get(url, {withCredentials:true})
       .then(() => {
         rootCommentInfo.refreshVotes();

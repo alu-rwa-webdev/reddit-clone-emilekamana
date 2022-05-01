@@ -1,0 +1,486 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Reddit Clone Backend endpoints",
+    "version": "1.0.0",
+    "title": "Reddit Clone",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "virtserver.swaggerhub.com",
+  "basePath": "/emilekamana/RedditClone/1.0.0",
+  "tags": [
+    {
+      "name": "user",
+      "description": "User related endpoints"
+    },
+    {
+      "name": "comment",
+      "description": "Handling posts and comments"
+    },
+    {
+      "name": "vote",
+      "description": "Handling up and down votes"
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/vote": {
+      "get": {
+        "tags": [
+          "vote"
+        ],
+        "summary": "get single comment",
+        "description": "Returns one comment object based on the id passed as paramater\n",
+        "operationId": "getVotes",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "commentId",
+            "description": "Id of the comment to return votes",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/CommentId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "search results matching criteria",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Vote"
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter"
+          }
+        }
+      }
+    },
+    "/vote/{commentId}/{direction}": {
+      "post": {
+        "tags": [
+          "vote"
+        ],
+        "summary": "Create new comment",
+        "description": "Takes in comment info and creates a new comment in the database",
+        "operationId": "voteComment",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "commentId",
+            "in": "path",
+            "description": "pass a comment id to vote on",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "direction",
+            "in": "path",
+            "description": "pass a direction whether up for upvoting or down for downvoting",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "item created"
+          },
+          "400": {
+            "description": "invalid input, object invalid"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/comments/{id}": {
+      "get": {
+        "tags": [
+          "comment"
+        ],
+        "summary": "get single comment",
+        "description": "Returns one comment object based on the id passed as paramater\n",
+        "operationId": "getCommentById",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "pass a root id to get all comments to a post",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "search results matching criteria",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Comment"
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter"
+          }
+        }
+      }
+    },
+    "/comments/root/{rootId}": {
+      "get": {
+        "tags": [
+          "comment"
+        ],
+        "summary": "list of users registered",
+        "description": "Gives a list of all comments posted/stored in the database as long as you provide a valid token and optional search and filters by rootid\n",
+        "operationId": "getCommentsByRoot",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "rootId",
+            "in": "path",
+            "description": "pass a root id to get all comments to a post",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "search results matching criteria",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Comment"
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter"
+          }
+        }
+      }
+    },
+    "/comment": {
+      "get": {
+        "tags": [
+          "comment"
+        ],
+        "summary": "list of comments posted",
+        "description": "Gives a list of all comments posted/stored in the database as long as you provide a valid token and optional search and filters\n",
+        "operationId": "getComments",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "pass an optional search string for looking up posts",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "search results matching criteria",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Comment"
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "comment"
+        ],
+        "summary": "Create new comment",
+        "description": "Takes in comment info and creates a new comment in the database",
+        "operationId": "addComment",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "newComment",
+            "description": "New comment to be created",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/Comment"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "item created"
+          },
+          "400": {
+            "description": "invalid input, object invalid"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "list of users registered",
+        "description": "Gives a list of all users created/stored in the database as long as you provide a valid token\n",
+        "operationId": "getUsers",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "search results matching criteria",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UserReturn"
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter"
+          }
+        }
+      }
+    },
+    "/user/login": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Authenticates the user",
+        "description": "Creates bearer token and adds sends it in the cookies",
+        "operationId": "loginUser",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "loginView",
+            "description": "Example output",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/UserLogin"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "item created"
+          },
+          "400": {
+            "description": "invalid input, object invalid"
+          },
+          "409": {
+            "description": "an existing user already exists"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/user/register": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Create new user",
+        "description": "Takes in user info and creates a new user in the database",
+        "operationId": "registerUser",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "newUser",
+            "description": "New user to be created",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/UserRegister"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "item created"
+          },
+          "400": {
+            "description": "invalid input, object invalid"
+          },
+          "409": {
+            "description": "an existing user already exists"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/user/logout": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Logout user",
+        "description": "Removes token from cookies to disable further api calls from the front end",
+        "operationId": "logoutUser",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Logged out"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CommentId": {
+      "type": "object",
+      "properties": {
+        "commentId": {
+          "type": "string",
+          "format": "uuid",
+          "example": "626c4d3e1f389efb84a6d586"
+        }
+      }
+    },
+    "Vote": {
+      "type": "object",
+      "properties": {
+        "author": {
+          "type": "string",
+          "example": "Aimee"
+        },
+        "commentId": {
+          "type": "string",
+          "format": "uuid",
+          "example": "626c4d3e1f389efb84a6d586"
+        },
+        "direction": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "Comment": {
+      "type": "object",
+      "properties": {
+        "author": {
+          "type": "string",
+          "example": "Aimee"
+        },
+        "title": {
+          "type": "string",
+          "example": "First Post"
+        },
+        "body": {
+          "type": "string",
+          "example": "This is my first post"
+        },
+        "parentId": {
+          "type": "string",
+          "format": "uuid",
+          "example": "626c4d3e1f389efb84a6d586"
+        },
+        "rootId": {
+          "type": "string",
+          "format": "uuid",
+          "example": "626c4d3e1f389efb84a6d586"
+        }
+      }
+    },
+    "UserReturn": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "example": "Aimee"
+        }
+      }
+    },
+    "UserRegister": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "example": "Aimee"
+        },
+        "email": {
+          "type": "string",
+          "example": "Aimee@gmail.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "something"
+        }
+      }
+    },
+    "UserLogin": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "example": "Aimee"
+        },
+        "password": {
+          "type": "string",
+          "example": "something"
+        }
+      }
+    }
+  }
+}

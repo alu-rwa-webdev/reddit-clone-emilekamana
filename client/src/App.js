@@ -15,12 +15,12 @@ function App() {
 
   useEffect(() => {
 
-    axios.get('http://localhost:4000/user', {withCredentials:true})
+    axios.get('https://em-reddit-clone-api.herokuapp.com/user', {withCredentials:true})
       .then(response => setUser(response.data));
 
   }, []);
   function logout() {
-    axios.post('http://localhost:4000/logout', {}, {withCredentials:true})
+    axios.post('https://em-reddit-clone-api.herokuapp.com/user/logout', {}, {withCredentials:true})
       .then(() => setUser({}));
   }
 

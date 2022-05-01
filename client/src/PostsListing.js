@@ -3,11 +3,10 @@ import {useState,useEffect} from "react";
 import axios from "axios";
 
 function PostsListing() {
-
   const [comments,setComments] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:4000/comments', {withCredentials:true})
+    axios.get('https://em-reddit-clone-api.herokuapp.com/comment', {withCredentials:true})
       .then(response => setComments(response.data));
 
   }, []);

@@ -1,66 +1,62 @@
-const _ = require('lodash');
-const taskModel = require('../models/user')
-// const data = require('../data/tasks')
+import {getUserFromToken} from "./UserFunctions.js";
+import User from "../models/User.js";
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
-// Display list of all tasks
-exports.list_tasks = async (req, res) => {
-    console.log('listing')
-    const tasks = await taskModel.find({});
-    try {
-        res.send({tasks: tasks});
-      } catch (error) {
-        res.status(500).send(error);
-      }
-};
-
-// create a new task
-exports.create_task = async (req, res) => {
-    const task = new taskModel(req.body);
-  
-    try {
-      await task.save();
-      res.status(201).send(task);
-    } catch(error) {
-      res.status(500).send(error);
-    }
-};
-
-// Delete a task
-exports.delete_task = async (req,res) =>{
-    try{
-        const taskId = req.params.taskId
-        await taskModel.deleteOne({_id: taskId});
-        res.status(204).send("Deleted");
-    }catch(error){
-        res.status(500).send(error);
-    }
-}
-
-// retrieve a task by ID
-exports.retrieve_task = async (req, res) => {
-  try {
-      const taskId = req.params.taskId
-      const task = await taskModel.findOne({ _id: taskId });  
-      if( task != null)
-      res.send(task);
-      else
-      res.status(404).send({error: "There is no task at that id"})
-  } catch (error) {
-    res.status(500).send(error);
+const secret = 'secret123';
+export const registerUser =  async(req, res) => {
+    const {email,username} = req.body;
+    const password = bcrypt.hashSync(req.body.password, 10);
+    const user = new User({email,username,password});
+    user.save().then(user => {
+      jwt.sign({id:user._id}, secret, (err, token) => {
+        if (err) {
+          console.log(err);
+          res.sendStatus(500);
+        } else {
+          res.status(201).cookie('token', token, { sameSite: 'none', secure: true }).send();
+        }
+      });
+    }).catch(e => {
+      console.log(e);
+      res.sendStatus(500);
+    });
   }
-};
-
-// update a task by ID
-exports.update_task = async (req, res) => {
-    try {
-        const taskId = req.params.taskId
-        const { title, is_completed } = req.body
-        const task= await taskModel.findOneAndUpdate({_id:taskId},{$set: {title: title, is_completed: is_completed}})
-        if (task != null)
-        res.send("Updated");
-        else
-        res.status(404).send({error: "There is no task at that id"})
-    } catch (error) {
-      res.status(500).send(error);
+  
+  export const getUsers =  async(req, res) => {
+    const token = req.cookies.token;
+    if (!token) {
+      res.sendStatus(401);
+      return;
     }
-  };
+    getUserFromToken(token)
+      .then(user => {
+        res.json({username:user.username});
+      })
+      .catch(err => {
+        console.log(err);
+        res.sendStatus(500);
+      });
+  }
+  
+  export const loginUser =  async(req, res) => {
+    const {username, password} = req.body;
+    User.findOne({username}).then(user => {
+      if (user && user.username) {
+        const passOk = bcrypt.compareSync(password, user.password);
+        if (passOk) {
+          jwt.sign({id:user._id}, secret, (err, token) => {
+            res.cookie('token', token,{ sameSite: 'none', secure: true }).send();
+          });
+        } else {
+          res.status(422).json('Invalid username or password');
+        }
+      } else {
+        res.status(422).json('Invalid username or password');
+      }
+    });
+  }
+  
+  export const logoutUser =  async(req, res) => {
+    res.cookie('token', '').send();
+  }

@@ -4,13 +4,14 @@ import Textarea from "./Textarea";
 import Button from "./Button";
 import axios from "axios";
 
+
 function CommentForm (props) {
   const userInfo = useContext(UserContext);
   const [commentBody,setCommentBody] = useState('');
   function postComment(e) {
     e.preventDefault();
     const data = {body:commentBody, parentId:props.parentId,rootId:props.rootId,};
-    axios.post('http://localhost:4000/comments', data, {withCredentials:true})
+    axios.post('https://em-reddit-clone-api.herokuapp.com/comment', data, {withCredentials:true})
       .then(response => {
         setCommentBody('');
         if (props.onSubmit) {
